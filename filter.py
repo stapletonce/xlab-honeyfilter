@@ -7,9 +7,12 @@ from scapy.all import *
 packets = rdpcap('example.pcapng')
 
 # write packets to a pcap file, ignoring the ones to be "filtered out"
-count = 0;
+count = 0
+
+ports = [5060] # sip ports (filter by specific port)
+
 for pkt in packets:
-    if not (pkt.haslayer(ARP)):
+    if not (pkt.haslayer(ARP) and pkt[TCP].sport in ports):
         wrpcap('filtered.pcap', pkt, append=True)
     else:
         count+=1
